@@ -1,0 +1,240 @@
+body {
+  overflow-x: hidden;
+}
+
+.div-title {
+  font-size: .9em;
+  text-align: left;
+  padding: var(--van-padding-md);
+  line-height: 1.2em;
+  color: #666;
+  font-weight: bold;
+}
+
+.div-title.div-title-padbottom8 {
+  padding-bottom: 8px;
+}
+
+.div-title.div-title-padbottom2 {
+  padding-bottom: 2px;
+}
+
+.div-title > .right {
+  float: right;
+  font-weight: 200;
+}
+
+.div-input {
+  padding: 46px 0;
+  box-sizing: border-box;
+  background: #FFF;
+}
+
+.home-swan-ctn {
+  width: 100%;
+  height: calc(100vh - 50px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.add-nav-bar {
+  margin-top: 46px;
+  height: calc(100vh - 50px - 46px);
+}
+
+.van-tab i.van-icon {
+  margin-right: 4px;
+}
+.van-tab.van-tab--active {
+  font-weight: bold;
+  color: #1989fa;
+}
+.van-tab.van-tab--active i.van-icon {
+  color: #1989fa;
+}
+.van-tabs__line {
+  background: #1989fa;
+}
+
+.grid-class {
+  background: rgba(0,0,0,0);
+}
+.grid-class > .van-grid-item__content {
+  background: rgba(0,0,0,0) !important;
+}
+
+.nav-bar-top.title-text-align-left .van-nav-bar__title {
+  margin-left: 50px;
+}
+
+.van-tab .van-badge__wrapper {
+  padding: calc(var(--van-badge-dot-size)/2);
+}
+.van-tab .van-badge--dot {
+  transform: translate(0,0);
+}
+
+.list-row {
+  background: #FFF;
+  padding: 16px;
+  text-align: left;
+  font-size: .9em;
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+.list-row.canactive:active {
+  background: rgba(200,200,200,.1);
+}
+
+.list-row .list-row-header {
+  position: relative;
+  color: #333;
+  margin-bottom: 4px;
+  line-height: 1.2em;
+  overflow: hidden;
+}
+.list-row .list-row-body {
+  position: relative;
+  color: #888;
+  line-height: 1.2em;
+  overflow: hidden;
+}
+
+.list-row .right {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.--margin-bottom-10 {
+  margin-bottom: 10px !important;
+}
+
+.div-input .van-uploader__upload {
+  border: 2px dotted #DDD;
+  border-radius: 8px;
+  background: #FFF;
+}
+
+.div-input .van-uploader__preview-image {
+  border: 2px dotted #DDD;
+  border-radius: 8px;
+  background: #FFF;
+  box-sizing: border-box;
+}
+
+.div-input .van-uploader__preview-delete {
+  top: -1px; right: -1px;
+  height: 1.5em;
+  width: 1.5em;
+  border-radius: 0;
+  border: 1px solid #FFF;
+  background: var(--van-red);
+}
+
+.div-input .van-uploader__preview-delete .van-uploader__preview-delete-icon {
+  font-size: 1.5em;
+  top: 2px;
+  right: 2px;
+}
+
+.conner-add-button {
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+}
+
+.bottom-button {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 10px;
+  background-color: #FFF;
+}
+
+
+
+.div-input .date-class {
+  text-align: center;
+}
+
+.div-input .van-cell-group {
+  background: rgba(0,0,0,0)
+}
+.div-input .van-cell-group::after {
+  border: 0;
+}
+.div-input .van-cell-group.upload-cell-group {
+  background: #FFF;
+}
+
+.div-input .van-cell {
+  background: var(--van-gray-1);
+} 
+
+.div-input .van-cell.upload-cell {
+  background: #FFF;
+  padding-top: 0;
+}
+
+/* 消息列表 */
+.list-common-row {
+  position: relative;
+  margin: 0 10px;
+  padding: 20px 0;
+  border-bottom: solid 1px #dedede;
+
+  text-align: left;
+}
+
+.list-common-row:active {
+  background: rgba(200,200,200,.1);
+}
+
+.list-common-row .list-common-title {
+  padding: 2px 6px 2px 50px;
+  min-height: 3.3em;
+  position: relative;
+}
+
+.list-common-title .list-common-day {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; 
+  width: 50px;
+  display: inline-block;
+  text-align: center;
+  border-right: 1px solid #1989fa;
+}
+.list-common-title .list-common-day span {
+  display: block;
+}
+.list-common-title .list-common-day span:last-child {
+  font-size: 1.5em;
+  color: #1989fa;
+}
+.list-common-title p {
+  margin: 0;
+  padding-left: 10px;
+  font-size: 1.2em;
+}
+
+.list-common-title small {
+  padding-left: 10px;
+  color: #888;
+}
+
+.list-common-img{
+  border: 1px solid #EEE;
+  margin-top: 8px;
+  min-height: 20vh;
+}
+.list-common-content {
+  text-align: left;
+  font-size: 1em;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+.list-common-content .van-icon {
+  color: #1989fa
+}
