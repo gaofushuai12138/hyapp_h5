@@ -24,6 +24,7 @@
           </div>
         </div>
       </van-tab>
+
       <van-tab name="1" class="tab-contain">
         <template #title>
           统计信息
@@ -47,28 +48,32 @@
               </van-cell-group>
             </van-col>
           </van-row>
+        
+          <van-row class="search-row" justify="space-between">
+            <van-col span="3"  class="search-row-title">
+              <span>饲料名</span>
+            </van-col>
+            <van-col span="21" >
+              <van-cell-group inset>
+                <!-- <van-field v-model="medical_name"> -->
+                <van-field v-model="medicalText" is-link arrow-direction="down" @click="showPicker1 = true"></van-field>
+              </van-cell-group>
+            </van-col>
+
+          </van-row>
           <van-row class="search-row" justify="space-between">
             <van-col span="3"  class="search-row-title">
               <span>组别</span>
             </van-col>
-            <van-col span="11">
-            </van-col>
+          
             <van-col span="10">
               <van-cell-group inset>
                 <van-field v-model="groupText" is-link arrow-direction="down" @click="showPicker = true">
                 </van-field>
               </van-cell-group>
             </van-col>
-          </van-row>
-          <van-row class="search-row" justify="space-between">
-            <van-col span="3"  class="search-row-title">
-              <span>饲料名</span>
-            </van-col>
-            <van-col span="21">
-              <van-cell-group inset>
-                <van-field v-model="medical_name">
-                </van-field>
-              </van-cell-group>
+            <van-col span="11">
+              <van-button round type="success" color="#1989fa" @click="queryForage">查找</van-button>
             </van-col>
           </van-row>
           <div v-for="(listrow, index) in list1" :key="index" class="list-row">
@@ -84,8 +89,9 @@
         </div>
       </van-tab>
     </van-tabs>
-    <van-calendar v-model:show="showDateFrom" :show-confirm="false" @select="onConfirmFrom" />
-    <van-calendar v-model:show="showDateTo" :show-confirm="false" @select="onConfirmTo" />
+ 
+    <van-calendar v-model:show="showDateFrom" :show-confirm="false" :min-date="new Date(2021, 7, 1)" @select="onConfirmFrom" />
+    <van-calendar v-model:show="showDateTo" :show-confirm="false" :min-date="new Date(2021, 7, 1)"  @select="onConfirmTo" />
     <van-popup v-model:show="showPicker" position="bottom">
       <van-picker
         title="组别"
@@ -95,17 +101,36 @@
         cancel-button-text="清空"
       />
     </van-popup>
+    <van-popup v-model:show="showPicker1" position="bottom">
+      <van-picker
+        title="饲料名"
+        :columns="option_medical"
+        @confirm="onConfirmMedical"
+        @cancel="clearMedical"
+        cancel-button-text="清空"
+      />
+    </van-popup>
   </div>
 </template>
 <script>
 import * as echarts from 'echarts'
 import {Toast} from 'vant'
+import axios from 'axios'
+
+
+
 
 const option_group = [
-  { value: "group1", text: "组别1" },
-  { value: "group2", text: "组别2" },
-  { value: "group3", text: "组别3" },
-  { value: "group4", text: "组别4" },
+  { value: "1", text: "组别1" },
+  { value: "2", text: "组别2" },
+  { value: "3", text: "组别3" },
+  { value: "9", text: "组别4" },
+]
+
+
+const option_medical = [
+  // { value: "8", text: "花生秧" },
+  // { value: "9", text: "豆渣"}
 ]
 const exampleData = {
   medical_name: "饲料", this_stock: 20940, total_input: 36780, total_output: 25778, days: 60
@@ -133,10 +158,16 @@ export default {
       group: null,
       groupText: null,
       showPicker: false,
+      
+      option_medical,
+      medical:null,
+      medicalText: null,
+      showPicker1: false,
 
       medical_name: "",
     }
   },
+ 
 
   methods: {
     initPage() {
@@ -146,7 +177,8 @@ export default {
       this.sum0 = {}
       this.scrollTop0 = 0
 
-      this.list1 = []
+      // this.list1 = [{ id:"c1", name : "饲料入库折线图" },
+      //     { id:"c2", name : "饲料出库折线图" }]
 
       this.showDateFrom = false
       this.dateFrom = null
@@ -157,6 +189,10 @@ export default {
       this.groupText = null
       this.showPicker = false
 
+      this.medical = null
+      this.medicalText = null
+      this.showPicker1 = false
+
       this.medical_name = ""
     },
 
@@ -165,14 +201,51 @@ export default {
     },
     
     onLoad0() {
-      setTimeout(() => {
+
+      let res = axios.post("", {
+        act: "api_forage_stock",
         
-        for (let i=0; i<40; i++) {
-          let row = _.cloneDeep(exampleData)
-          row.medical_name = row.medical_name + this.list0.length
-          this.list0.push(row)
+      }, {
+        no_loading: true,
+      }).then((res) => {
+        //console.log(res)
+        let data = res.data
+        let arr = []
+        arr.push({
+          medical_name: "饲料", this_stock: 0, total_input: 0, total_output: 0, days: 0});
+        for (let i = 0; i < data.forage_list.length; i++) {
+          // this.list.push(data.staff_list[i]);
+          let item = data.forage_list[i];
+          let obj = {
+            medical_name:item.s_name,
+            this_stock:item.s_stock,
+            total_input:item.s_in_stock,
+            total_output:item.s_out_stock,
+            days:item.expect_days
+            
+          }
+          arr.push(obj)
+        
         }
-      }, 1000)
+        this.list0 = arr;
+
+        if (!res || res.code != 0 || !res.data) {
+          this.loading = false
+          this.finished = true
+          return
+        }
+
+      }
+
+      )
+      // setTimeout(() => {
+        
+      //   for (let i=0; i<40; i++) {
+      //     let row = _.cloneDeep(exampleData)
+      //     row.medical_name = row.medical_name + this.list0.length
+      //     this.list0.push(row)
+      //   }
+      // }, 1000)
     },
 
     onScroll0(e) {
@@ -187,6 +260,9 @@ export default {
 
       return true
     },
+    
+
+
     onConfirmFrom(date) {
       this.showDateFrom = false
 
@@ -214,23 +290,114 @@ export default {
       this.showPicker = false
     },
 
+    onConfirmMedical(item) {
+      this.medical = item.value
+      this.medicalText = item.text
+      this.showPicker1 = false
+    },
+
     clearGroup() {
       this.group = null
       this.groupText = null
       this.showPicker = false
     },
+    clearMedical() {
+      this.medical = null
+      this.medicalText = null
+      this.showPicker1 = false
+    },
+    queryForage(){
+      
+      axios.post("",  {
+        // act: "api_forage_statistics",
+        // "datetime_from":"2021-10-30",
+        // "datetime_to":"2021-11-5",
+        // "team_id":"9",
+        // "forage_id":"9"
+        act: "api_forage_statistics",
+        "datetime_from":this.dateFrom,
+        "datetime_to": this.dateTo,
+        "team_id":this.group,
+        "forage_id":this.medical
+      },{
+        no_loading: true,
+      }).then((res) => {
+        if (!res || res.code != 0 || !res.data||res.data.has_more==false) {
+          if(res.data.has_more==false){
+            alert("无相关数据")
+          }else{
+            alert("错误")
+          }
+          return
+        }else{
+          
+        //console.log(res)
+        setTimeout(() => {
+        this.list1 = [
+          { id:"c1", name : "饲料入库折线图" },
+          { id:"c2", name : "饲料出库折线图" },
+        ]
+        
+     
+        this.list1[0].data=res.data.forage_list[0].in_data[0].in_num
+        this.list1[1].data=res.data.forage_list[0].out_data[0].out_num
+        
 
+        this.list1[0].days=res.data.forage_list[0].in_data[0].in_date
+        this.list1[1].days=res.data.forage_list[0].out_data[0].out_date
+        
+      
+       
+
+        this.drawChart()
+      }, 1000)
+
+    }
+    })
+      
+    
+    },
     onLoad1() {
+
+      axios.post("", {
+        act: "api_forage_select",
+        
+      }, {
+        no_loading: true,
+      }).then((res) => {
+        //console.log(res)
+        let arr = []
+        for (let i = 0; i < res.data.forage_list.length; i++) {
+          let item = res.data.forage_list[i];
+          let obj = {
+            value:item.forage_id,
+            text:item.s_name,
+          }
+          arr.push(obj)
+        
+        }
+        this.option_medical = arr;
+
+        if (!res || res.code != 0 || !res.data) {
+          this.loading = false
+          this.finished = true
+          return
+        }
+
+      }
+
+      )
       setTimeout(() => {
         this.list1 = [
-          { id:"c1", name : "饲料出库折线图" },
-          { id:"c2", name : "饲料入库折线图" },
+          { id:"c1", name : "饲料入库折线图" },
+          { id:"c2", name : "饲料出库折线图" },
+         
         ]
 
         this.list1 = this.list1.map((row) => {
           let data = []
-          for (let i=0; i < 30; i++) {
-            data.push(_.random(100, 2000))
+          for (let i=0; i < this.list1.length; i++) {
+            data.push(0)
           }
           row.data = data
           return row
@@ -239,21 +406,35 @@ export default {
         setTimeout(this.drawChart, 1000)
       }, 1000)
     },
+      
+    
+
+  
 
     drawChart() {
-      let days = [];
-      for (let i=0; i < 30; i++) days.push(i+1)
+      //let days = [];
+      
 
       let mycharts = []
-      for (let i=0; i < this.list1.length; i++) {
-        let myChart = echarts.init(document.getElementById("char_" + this.list1[i].id));
+      //console.log(this.list1[0].id)
+      for (let i=0; i < 2; i++) {
+        //console.log("char_"+this.list1[i].id)
+        let myChart = echarts.init(document.getElementById("char_"+this.list1[i].id));
+        
         // 绘制图表
         myChart.setOption({
           // title: { text: this.list1[i].name },
           tooltip: {
           },
+          // grid: {
+          //  x: 60,
+          //  y: 35,
+          //  x2: 15,
+          //  y2: 35,
+          //  borderWidth: 1,
+          // },
           xAxis: {
-            data: days,
+            data: this.list1[i].days,
             type: 'category',
           },
           yAxis: {
@@ -358,5 +539,7 @@ export default {
   font-weight: bold; 
   color: #333; 
   text-align: left;
+  
 }
+
 </style>

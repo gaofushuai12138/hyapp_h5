@@ -1,35 +1,33 @@
 <template>
   <div>
-    <van-nav-bar title="药品信息" left-arrow @click-left="onClickLeft">
-    </van-nav-bar>
+    <van-nav-bar title="药品信息" left-arrow @click-left="onClickLeft"> </van-nav-bar>
     <van-tabs v-model:active="actIndex" swipeable>
       <van-tab name="0" class="tab-contain">
         <template #title> 库存信息 </template>
         <div ref="barnlist" class="tab-div" @scroll.passive="onScroll0">
-          <van-row class="title">
+          <van-row class="title" >
             <van-col span="5">药品名称</van-col>
             <van-col span="4">当前库存</van-col>
             <van-col span="4">总入库</van-col>
             <van-col span="4">总出库</van-col>
             <van-col span="7">预计使用天数</van-col>
           </van-row>
+      
           <div>
-            <van-row
-              :class="['row', index % 2 == 1 ? '' : 'odd']"
-              v-for="(row, index) in list0"
-              :key="index"
-            >
-              <van-col span="5">{{ row.medical_name }}</van-col>
-              <van-col span="4">{{ row.this_stock }} </van-col>
-              <van-col span="4">{{ row.total_input }}</van-col>
-              <van-col span="4">{{ row.total_output }}</van-col>
-              <van-col span="7">{{ row.days }}</van-col>
+            <van-row :class="['row', (index % 2 == 1) ? '' : 'odd']" v-for="(row, index) in list0" :key="index" >
+              <van-col span="5">{{row.medical_name}}</van-col>
+              <van-col span="4">{{row.this_stock}} </van-col>
+              <van-col span="4">{{row.total_input}}</van-col>
+              <van-col span="4">{{row.total_output}}</van-col>
+              <van-col span="7">{{row.days}}</van-col>
             </van-row>
           </div>
         </div>
       </van-tab>
       <van-tab name="1" class="tab-contain">
-        <template #title> 统计信息 </template>
+        <template #title>
+          统计信息
+        </template>
         <div class="div-input tab-div">
           <van-row class="search-row" justify="space-between">
             <van-col span="3" class="search-row-title">
@@ -37,83 +35,72 @@
             </van-col>
             <van-col span="10">
               <van-cell-group inset>
-                <van-cell
-                  style="height: 44px"
-                  :value="dateFrom"
-                  @click="showDateFrom = true"
-                  value-class="date-class"
-                />
+                <van-cell style="height: 44px;" :value="dateFrom" @click="showDateFrom = true" value-class="date-class" />
               </van-cell-group>
             </van-col>
-            <van-col
-              span="1"
-              style="line-height: 44px; font-size: 0.8em; color: #888"
-            >
+            <van-col span="1" style="line-height: 44px; font-size: .8em; color: #888">
               <span>至</span>
             </van-col>
             <van-col span="10">
               <van-cell-group inset>
-                <van-cell
-                  style="height: 44px"
-                  :value="dateTo"
-                  @click="showDateTo = true"
-                  value-class="date-class"
-                />
+                <van-cell style="height: 44px;" :value="dateTo" @click="showDateTo = true" value-class="date-class" />
               </van-cell-group>
             </van-col>
           </van-row>
-          <van-row class="search-row" justify="space-between">
-            <van-col span="3" class="search-row-title">
+          <!-- <van-row class="search-row" justify="space-between">
+            <van-col span="3"  class="search-row-title">
               <span>组别</span>
             </van-col>
-            <van-col span="11"> </van-col>
+            <van-col span="11">
+            </van-col>
             <van-col span="10">
               <van-cell-group inset>
-                <van-field
-                  v-model="groupText"
-                  is-link
-                  arrow-direction="down"
-                  @click="showPicker = true"
-                >
+                <van-field v-model="groupText" is-link arrow-direction="down" @click="showPicker = true">
                 </van-field>
               </van-cell-group>
             </van-col>
-          </van-row>
+          </van-row> -->
           <van-row class="search-row" justify="space-between">
-            <van-col span="3" class="search-row-title">
+            <van-col span="3"  class="search-row-title">
               <span>药品名</span>
             </van-col>
             <van-col span="21">
               <van-cell-group inset>
-                <van-field v-model="medical_name"> </van-field>
+                <!-- <van-field v-model="medical_name"> -->
+                <van-field v-model="medicalText" is-link arrow-direction="down" @click="showPicker1 = true"></van-field>
               </van-cell-group>
+            </van-col>
+          </van-row>
+          <van-row class="search-row" justify="space-between">
+            <van-col span="3"  class="search-row-title">
+              <span>组别</span>
+            </van-col>
+          
+            <van-col span="10">
+              <van-cell-group inset>
+                <van-field v-model="groupText" is-link arrow-direction="down" @click="showPicker = true">
+                </van-field>
+              </van-cell-group>
+            </van-col>
+            <van-col span="11">
+              <van-button round type="success" color="#1989fa" @click="queryMedical">查找</van-button>
             </van-col>
           </van-row>
           <div v-for="(listrow, index) in list1" :key="index" class="list-row">
             <div class="list-row-header">
-              {{ listrow.name }}
+              {{listrow.name}}
             </div>
             <div class="list-row-body">
-              <div
-                :ref="'char_' + listrow.id"
-                :id="'char_' + listrow.id"
-                style="width: 100%; height: 70vw"
-              ></div>
+              <div :ref="'char_' + listrow.id" :id="'char_' + listrow.id" style="width: 100%; height: 70vw;">
+
+              </div>
             </div>
           </div>
         </div>
       </van-tab>
     </van-tabs>
-    <van-calendar
-      v-model:show="showDateFrom"
-      :show-confirm="false"
-      @select="onConfirmFrom"
-    />
-    <van-calendar
-      v-model:show="showDateTo"
-      :show-confirm="false"
-      @select="onConfirmTo"
-    />
+    <van-calendar v-model:show="showDateFrom" :show-confirm="false" :min-date="new Date(2021, 7, 1)" @select="onConfirmFrom" />
+    <van-calendar v-model:show="showDateTo" :show-confirm="false" :min-date="new Date(2021, 7, 1)" @select="onConfirmTo" />
     <van-popup v-model:show="showPicker" position="bottom">
       <van-picker
         title="组别"
@@ -123,27 +110,36 @@
         cancel-button-text="清空"
       />
     </van-popup>
+    <van-popup v-model:show="showPicker1" position="bottom">
+      <van-picker
+        title="药品名"
+        :columns="option_medical"
+        @confirm="onConfirmMedical"
+        @cancel="clearMedical"
+        cancel-button-text="清空"
+      />
+    </van-popup>
   </div>
 </template>
 <script>
 import * as echarts from 'echarts'
-import { Toast } from 'vant'
+import {Toast} from 'vant'
+import axios from 'axios'
 
 const option_group = [
-  { value: 'group1', text: '组别1' },
-  { value: 'group2', text: '组别2' },
-  { value: 'group3', text: '组别3' },
-  { value: 'group4', text: '组别4' },
+  { value: "1", text: "组别1" },
+  { value: "2", text: "组别2" },
+  { value: "3", text: "组别3" },
+  { value: "9", text: "组别4" },
+]
+const option_medical = [
+ // { value: "56", text: "0.9%氯化钠注射液" }
 ]
 const exampleData = {
-  medical_name: '药品',
-  this_stock: 20940,
-  total_input: 36780,
-  total_output: 25778,
-  days: 60,
+  medical_name: "药品", this_stock: 20940, total_input: 36780, total_output: 25778, days: 60
 }
 export default {
-  name: 'ypxx',
+  name: "ypxx",
   data() {
     return {
       actIndex: 0,
@@ -166,7 +162,12 @@ export default {
       groupText: null,
       showPicker: false,
 
-      medical_name: '',
+      option_medical,
+      medical:null,
+      medicalText: null,
+      showPicker1: false,
+
+      medical_name:"",
     }
   },
 
@@ -179,7 +180,8 @@ export default {
       this.scrollTop0 = 0
 
       this.list1 = []
-
+      // this.list1 = [{ id:"c1", name : "药品出库折线图" },
+      //     { id:"c2", name : "药品入库折线图" }]
       this.showDateFrom = false
       this.dateFrom = null
       this.showDateTo = false
@@ -189,21 +191,56 @@ export default {
       this.groupText = null
       this.showPicker = false
 
-      this.medical_name = ''
+      this.medical = null
+      this.medicalText = null
+      this.showPicker1 = false
+
+      this.medical_name = ""
     },
 
     onClickLeft() {
       history.back()
     },
-
+    
     onLoad0() {
-      setTimeout(() => {
-        for (let i = 0; i < 40; i++) {
-          let row = _.cloneDeep(exampleData)
-          row.medical_name = row.medical_name + this.list0.length
-          this.list0.push(row)
+
+      let res = axios.post("", {
+        act: "api_medical_stock",
+        
+      }, {
+        no_loading: true,
+      }).then((res) => {
+        //console.log(res)
+        let data = res.data
+        let arr = []
+        arr.push({
+          medical_name: "药品", this_stock: 0, total_input: 0, total_output: 0, days: 0});
+        for (let i = 0; i < data.medical_list.length; i++) {
+          // this.list.push(data.staff_list[i]);
+          let item = data.medical_list[i];
+          let obj = {
+            medical_name:item.m_name,
+            this_stock:item.m_stock,
+            total_input:item.m_in_stock,
+            total_output:item.m_out_stock,
+            days:item.expect_days
+            
+          }
+          arr.push(obj)
+          
         }
-      }, 1000)
+        this.list0 = arr;
+
+        if (!res || res.code != 0 || !res.data) {
+          this.loading = false
+          this.finished = true
+          return
+        }
+
+      }
+
+      )
+      
     },
 
     onScroll0(e) {
@@ -245,23 +282,116 @@ export default {
       this.showPicker = false
     },
 
+    onConfirmMedical(item) {
+      this.medical = item.value
+      this.medicalText = item.text
+      this.showPicker1 = false
+    },
+
     clearGroup() {
       this.group = null
       this.groupText = null
       this.showPicker = false
     },
+    
+    clearMedical() {
+      this.medical = null
+      this.medicalText = null
+      this.showPicker1 = false
+    },
+    queryMedical(){
+      
+      axios.post("",  {
+        // act: "api_forage_statistics",
+        // "datetime_from":"2021-10-30",
+        // "datetime_to":"2021-11-5",
+        // "team_id":"9",
+        // "forage_id":"9"
+        act: "api_medical_statistics",
+        "datetime_from":this.dateFrom,
+        "datetime_to": this.dateTo,
+        "team_id":this.group,
+        "medical_id":this.medical
+      },{
+        no_loading: true,
+      }).then((res) => {
+        if (!res || res.code != 0 || !res.data||res.data.has_more==false) {
+          if(res.data.has_more==false){
+            alert("无相关数据")
+          }else{
+            alert("错误")
+          }
+          return
+        }else{
+          
+        //console.log(res)
+        setTimeout(() => {
+        this.list1 = [
+          { id:"c1", name : "药品出库折线图" },
+          { id:"c2", name : "药品入库折线图" },
+        ]
+        
+     
+        this.list1[1].data=res.data.medical_list[0].out_data[0].out_num
+        this.list1[0].data=res.data.medical_list[0].in_data[0].in_num
+
+        
+        this.list1[1].days=res.data.medical_list[0].out_data[0].out_date
+        this.list1[0].days=res.data.medical_list[0].in_data[0].in_date
+        
+      
+       
+
+        this.drawChart()
+      }, 1000)
+
+    }
+    })
+      
+    
+    },
 
     onLoad1() {
+      
+      axios.post("", {
+        act: "api_medical_select",
+        
+      }, {
+        no_loading: true,
+      }).then((res) => {
+        //console.log(res)
+        let arr = []
+        for (let i = 0; i < res.data.medical_list.length; i++) {
+          let item = res.data.medical_list[i];
+          let obj = {
+            value:item.medical_id,
+            text:item.m_name,
+          }
+          arr.push(obj)
+        
+        }
+        this.option_medical = arr;
+
+        if (!res || res.code != 0 || !res.data) {
+          this.loading = false
+          this.finished = true
+          return
+        }
+
+      }
+
+      )
       setTimeout(() => {
         this.list1 = [
-          { id: 'c1', name: '药品出库折线图' },
-          { id: 'c2', name: '药品入库折线图' },
+          { id:"c1", name : "药品出库折线图" },
+          { id:"c2", name : "药品入库折线图" },
+         
         ]
 
-        this.list1 = this.list1.map(row => {
+        this.list1 = this.list1.map((row) => {
           let data = []
-          for (let i = 0; i < 30; i++) {
-            data.push(_.random(100, 2000))
+          for (let i=0; i < this.list1.length; i++) {
+            data.push(0)
           }
           row.data = data
           return row
@@ -272,41 +402,47 @@ export default {
     },
 
     drawChart() {
-      let days = []
-      for (let i = 0; i < 30; i++) days.push(i + 1)
+      
 
       let mycharts = []
-      for (let i = 0; i < this.list1.length; i++) {
-        let myChart = echarts.init(
-          document.getElementById('char_' + this.list1[i].id),
-        )
+      for (let i=0; i < 2; i++) {
+        let myChart = echarts.init(document.getElementById("char_" + this.list1[i].id));
         // 绘制图表
         myChart.setOption({
           // title: { text: this.list1[i].name },
-          tooltip: {},
+          tooltip: {
+          },
+          // grid: {
+          //  x: 60,
+          //  y: 35,
+          //  x2: 15,
+          //  y2: 35,
+          //  borderWidth: 1,
+          // },
           xAxis: {
-            data: days,
+            data: this.list1[i].days,
             type: 'category',
           },
           yAxis: {
             // name: this.list1[i].name,
-          },
+          },              
           series: [
             {
               smooth: true,
               name: this.list1[i].name,
-              type: 'line',
+              type: "line",
               data: this.list1[i].data,
             },
           ],
-        })
+        });
 
         mycharts.push(myChart)
       }
-    },
+    }
   },
 
-  mounted() {},
+  mounted() {
+  },
 
   activated() {
     if (this.$route.isback && this.scrollTop0 > 0) {
@@ -322,7 +458,7 @@ export default {
 
   beforeRouteLeave(to, form, next) {
     let leave = true
-    if (window.event.type === 'popstate') {
+    if (window.event.type === "popstate") {
       if (this.showDateFrom || this.showDateTo || this.showPicker) {
         leave = false
         this.showDateFrom = false
@@ -340,7 +476,7 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
-  background: #fff;
+  background: #FFF;
   padding-bottom: 60px;
   border-top: 1px solid #eee;
 }
@@ -361,21 +497,21 @@ export default {
   position: fixed;
   top: 0;
   padding: 10px 0;
-  font-size: 0.8em;
+  font-size: .8em;
   color: #888;
   width: 100vw;
-  background: #fff;
+  background: #FFF;
   line-height: 2em;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
 }
 .row {
   padding: 10px 0;
-  font-size: 0.8em;
+  font-size: .8em;
   line-height: 2em;
 }
 .row.odd {
-  background: #eee;
+  background: #EEE;
 }
 
 .search-row {
@@ -384,10 +520,10 @@ export default {
 }
 
 .search-row-title {
-  line-height: 44px;
-  font-size: 0.9em;
-  font-weight: bold;
-  color: #333;
+  line-height: 44px; 
+  font-size: .9em; 
+  font-weight: bold; 
+  color: #333; 
   text-align: left;
 }
 </style>
