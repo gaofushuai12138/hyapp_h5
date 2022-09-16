@@ -45,6 +45,7 @@
 <script>
 
 import axios from 'axios'
+import { Dialog } from 'vant'
 
 const exampleData = {
   group: "繁育1组", name: "上官婉儿", postion: "巡视员", gender: "女", age: 24, entry_date: "2018-09-01"
@@ -60,10 +61,10 @@ export default {
       groupNo: null,
       groupText: null,
       option_type: [
-        { value: "1", text: "组别1", },
-        { value: "2", text: "组别2", },
-        { value: "3", text: "组别3", },
-        { value: "9", text: "组别4", },
+        // { value: "1", text: "组别1", },
+        // { value: "2", text: "组别2", },
+        // { value: "3", text: "组别3", },
+        // { value: "9", text: "组别4", },
       ],
       showPicker: false,
 
@@ -107,24 +108,24 @@ export default {
       this.showPicker = false
       this.groupNo = null
       this.groupText = null
-      this.searchText = null
+      //this.searchText = null
     },
 
 
     queryStaff(){//查找按键的单击事件
       
-      if(this.groupText=="组别1"){
-          this.groupNo=1
-      }
-      if(this.groupText=="组别2"){
-          this.groupNo=2
-      }
-      if(this.groupText=="组别3"){
-          this.groupNo=3
-      }
-      if(this.groupText=="组别4"){
-        this.groupNo=9
-      }
+      // if(this.groupText=="组别1"){
+      //     this.groupNo=1
+      // }
+      // if(this.groupText=="组别2"){
+      //     this.groupNo=2
+      // }
+      // if(this.groupText=="组别3"){
+      //     this.groupNo=3
+      // }
+      // if(this.groupText=="组别4"){
+      //   this.groupNo=9
+      // }
      
 
       
@@ -135,9 +136,16 @@ export default {
       },{
         no_loading: true,
       }).then((res) => {
-
+        if (!res || res.code != 0 || !res.data||res.data.has_more==false) {
+          if(res.data.has_more==false){
+            Dialog.alert({message:"无相关数据"});
+          }else{
+            Dialog.alert({message:"错误"});
+          }
+          return
+        }else{
       
-      console.log(res)
+      //console.log(res)
         
 
         let data = res.data
@@ -166,7 +174,7 @@ export default {
 
   
         
-     
+        }
       })
       
       
@@ -178,7 +186,37 @@ export default {
 
     onLoad() {
       this.loading = true;
+      
+      axios.post("", {
+        act: "api_staff_teamselect",
+        
+      }, {
+        no_loading: true,
+      }).then((res) => {
+        //console.log(res)
+        let arr = []
+        // arr.push({
+        //   value:null, text:"所有组" });
+        for (let i = 0; i < res.data.team_list.length; i++) {
+          let item = res.data.team_list[i];
+          let obj = {
+            value:item.team_id,
+            text:item.team_name,
+          }
+          arr.push(obj)
+        
+        }
+        this.option_type = arr;
 
+        if (!res || res.code != 0 || !res.data) {
+          this.loading = false
+          this.finished = true
+          return
+        }
+
+      }
+
+      )
       //
       let res = axios.post("", {
         act: "api_staff_list",
@@ -187,6 +225,7 @@ export default {
       }, {
         no_loading: true,
       }).then((res) => {
+        
         //console.log(res)
         let data = res.data
         let arr = []
@@ -203,15 +242,11 @@ export default {
           }
           arr.push(obj)
           //console.log(arr)
-          // this.listData.team_name += data.staff_list[i].team_name
-          // this.listData.name += data.staff_list[i].name
-          // this.listData.postion += data.staff_list[i].postion
-          // this.listData.sex += data.staff_list[i].sex
-          // this.listData.age += parseInt(data.staff_list[i].age)
-          // this.listData.entry_date += data.staff_list[i].entry_date
+        
         }
         this.list = arr;
-
+        
+      
         if (!res || res.code != 0 || !res.data) {
           this.loading = false
           this.finished = true
@@ -228,16 +263,7 @@ export default {
       // }
 
       // console.log(res)
-      // let data = res.data
-      // for (let i = 0; i < data.staff_list.length; i++) {
-      //   this.list.push(data.staff_list[i]);
-      //   this.listData.team_name += data.staff_list[i].team_name
-      //   this.listData.name += data.staff_list[i].name
-      //   this.listData.postion += data.staff_list[i].postion
-      //   this.listData.sex += data.staff_list[i].sex
-      //   this.listData.age += parseInt(data.staff_list[i].age)
-      //   this.listData.entry_date += data.staff_list[i].entry_date
-      // }
+
 
       // 加载状态结束
       this.loading = false;
