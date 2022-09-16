@@ -125,12 +125,13 @@
 import * as echarts from 'echarts'
 import {Toast} from 'vant'
 import axios from 'axios'
+import { Dialog } from 'vant'
 
 const option_group = [
-  { value: "1", text: "组别1" },
-  { value: "2", text: "组别2" },
-  { value: "3", text: "组别3" },
-  { value: "9", text: "组别4" },
+  // { value: "1", text: "组别1" },
+  // { value: "2", text: "组别2" },
+  // { value: "3", text: "组别3" },
+  // { value: "9", text: "组别4" },
 ]
 const option_medical = [
  // { value: "56", text: "0.9%氯化钠注射液" }
@@ -299,6 +300,8 @@ export default {
       this.medicalText = null
       this.showPicker1 = false
     },
+
+
     queryMedical(){
       
       axios.post("",  {
@@ -317,9 +320,9 @@ export default {
       }).then((res) => {
         if (!res || res.code != 0 || !res.data||res.data.has_more==false) {
           if(res.data.has_more==false){
-            alert("无相关数据")
+            Dialog.alert({message:"无相关数据"});
           }else{
-            alert("错误")
+            Dialog.alert({message:"错误"});
           }
           return
         }else{
@@ -352,7 +355,40 @@ export default {
     },
 
     onLoad1() {
+
+      axios.post("", {
+        act: "api_medical_teamselect",
+        
+      }, {
+        no_loading: true,
+      }).then((res) => {
+        //console.log(res)
+        let arr = []
+        arr.push({
+          value:null, text:"所有组" });
+        for (let i = 0; i < res.data.team_list.length; i++) {
+          let item = res.data.team_list[i];
+          let obj = {
+            value:item.team_id,
+            text:item.team_name,
+          }
+          arr.push(obj)
+        
+        }
+        this.option_group = arr;
+
+        if (!res || res.code != 0 || !res.data) {
+          this.loading = false
+          this.finished = true
+          return
+        }
+
+      }
+
+      )
       
+
+
       axios.post("", {
         act: "api_medical_select",
         
@@ -381,6 +417,9 @@ export default {
       }
 
       )
+
+
+
       setTimeout(() => {
         this.list1 = [
           { id:"c1", name : "药品出库折线图" },
